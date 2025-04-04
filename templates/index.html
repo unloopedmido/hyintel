@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+		<title>HyIntel</title>
+	</head>
+	<body class="max-w-[80vw] mx-auto bg-neutral-800 text-white">
+		<div class="flex flex-col items-center gap-y-4">
+			<h1 class="text-3xl font-bold mt-5">Auction House</h1>
+
+			<form method="get" action="/">
+				<label for="query" class="sr-only">Search item</label>
+				<input
+					class="px-4 py-2 bg-neutral-700 rounded-md outline-none"
+					type="text"
+					name="query"
+					placeholder="Search item..."
+					value="{{ query }}"
+				/>
+				<button
+					type="submit"
+					class="px-4 py-2 rounded-md bg-neutral-500 hover:bg-neutral-700 cursor-pointer transition-colors"
+				>
+					Search
+				</button>
+			</form>
+		</div>
+
+		<div
+			id="auctionModal"
+			class="backdrop-blur-[4px] z-10 min-h-screen w-screen top-0 left-0 fixed items-center justify-center hidden"
+		>
+			<div class="z-20 bg-neutral-700 rounded-md p-6 max-w-md w-full">
+				<div class="flex justify-between items-center mb-4">
+					<h2 id="modalItemName" class="text-xl font-bold"></h2>
+					<button onclick="closeModal()" class="text-gray-400 hover:text-white">
+						✕
+					</button>
+				</div>
+				<div class="flex gap-4 items-center">
+					<img id="modalItemImage" class="w-16 aspect-square" alt="" />
+					<div>
+						<p id="modalItemPrice" class="text-lg"></p>
+						<p id="modalItemLore"></p>
+						<!-- Add more auction details here as needed -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="grid gap-6 grid-cols-2 mt-10 mb-10">
+			{% for auction in auctions %}
+			<div
+				class="bg-neutral-700 p-3 rounded-md flex gap-x-4 cursor-pointer hover:bg-neutral-600 transition-colors auction-item"
+				data-item-name="{{ auction.item_name }}"
+				data-item-image="{{ auction.item_image }}"
+				data-item-price="{{ auction.starting_bid }}"
+				data-item-lore="{{ auction.item_lore.replace('\n', '<br/>')|safe }}"
+			>
+				<img
+					src="{{auction['item_image']}}"
+					class="w-12 h-12"
+					alt="{{auction['item_name']}}"
+				/>
+				<div class="flex flex-col">
+					<p>{{ auction["item_name"] }}</p>
+
+					<p class="text-[#AAAAAA]">
+						Buy It Now:
+						<span class="text-yellow-500"
+							>{{ "{:,}".format(auction["starting_bid"]) }} coins</span
+						>
+					</p>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+
+		<script>
+			function openModal(itemName, itemImage, price, lore) {
+				document.getElementById("modalItemName").textContent = itemName;
+				document.getElementById("modalItemImage").src = itemImage;
+				document.getElementById("modalItemImage").alt = itemName;
+				document.getElementById("modalItemPrice").textContent =
+					price + " coins";
+				document.getElementById("modalItemLore").innerHTML = lore;
+
+				const modal = document.getElementById("auctionModal");
+				modal.classList.remove("hidden");
+				modal.classList.add("flex");
+			}
+
+			function closeModal() {
+				const modal = document.getElementById("auctionModal");
+				modal.classList.remove("flex");
+				modal.classList.add("hidden");
+			}
+
+			document
+				.getElementById("auctionModal")
+				.addEventListener("click", function (event) {
+					if (event.target === this) {
+						closeModal();
+					}
+				});
+
+			document.querySelectorAll(".auction-item").forEach(function (item) {
+				item.addEventListener("click", function () {
+					const itemName = this.getAttribute("data-item-name");
+					const itemImage = this.getAttribute("data-item-image");
+					const price = this.getAttribute("data-item-price");
+					const lore = this.getAttribute("data-item-lore");
+					openModal(itemName, itemImage, price, lore);
+				});
+			});
+		</script>
+	</body>
+</html>

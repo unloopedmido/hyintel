@@ -24,6 +24,13 @@ auction_cache = AuctionCache()
 async def show_auctions(request: Request, query: str = Query(None), rarity: str = Query(None)):
     url = "https://api.hypixel.net/v2/skyblock/auctions"
     
+    if not query:
+        return templates.TemplateResponse("index.html", {
+            "request": request,
+            "auctions": [],
+            "query": ""
+        })
+    
     # Cache invalidation - refresh data if empty or older than 3 mins
     if len(auction_cache.cached_auctions) == 0 or (int(time.time()) - auction_cache.cache_time) > 60 * 3:
         logging.info("Getting new auctions")

@@ -24,7 +24,7 @@ def parse_item_bytes(bytes_str: str):
         # Return formatted JSON
         return json.dumps(item_dict, indent=2)
     
-    except nbtlib.MalformedFileError:
+    except nbtlib.CastError as e:
         # If NBT parsing fails, try to handle as regular data
         try:
             # Try to decode as text and convert to JSON if possible

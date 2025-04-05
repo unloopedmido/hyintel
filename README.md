@@ -4,6 +4,11 @@ A lightweight, no-framework web interface for browsing Hypixel Skyblock auctions
 
 Built using **FastAPI** (with Jinja2 templates), plain HTML, and TailwindCSS. It fetches real-time data from the Hypixel API and displays Buy-It-Now auctions in a simple, responsive layout. Clicking on an item opens a modal with detailed item info, including formatted lore.
 
+## 📸 Preview
+![Layout](public/layout.png)
+--
+![Modal](public/modal.png)
+
 ## ✨ Features
 
 - 🧙 Minecraft-style lore formatting using a custom parser
